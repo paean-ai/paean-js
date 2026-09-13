@@ -48,7 +48,13 @@ if (merge.status !== 0 && !git(['diff', '--name-only', '--diff-filter=U'])) {
 }
 // The preflight proved these files are pristine upstream. Select the complete new upstream tree,
 // including generated builds, instead of combining artifacts from divergent release branches.
-git(['restore', '--source', commit, '--staged', '--worktree', '--', ...metadata.protectedPaths]);
+const targetFiles = new Set(git(['ls-tree', '-r', '--name-only', '-z', commit, '--', ...metadata.protectedPaths]).split('\0').filter(Boolean));
+const indexFiles = new Set(git(['ls-files', '-z', '--', ...metadata.protectedPaths]).split('\0').filter(Boolean));
+const removedFiles = [...indexFiles].filter(path => !targetFiles.has(path));
+// git restore cannot resolve an unmerged path that the target release deleted.
+if (removedFiles.length) git(['rm', '-f', '--ignore-unmatch', '--', ...removedFiles]);
+const existingPaths = git(['ls-tree', '--name-only', commit, '--', ...metadata.protectedPaths]).split('\n').filter(Boolean);
+git(['restore', '--source', commit, '--staged', '--worktree', '--', ...existingPaths]);
 const conflicts = git(['diff', '--name-only', '--diff-filter=U']).split('\n').filter(Boolean);
 if (conflicts.length) {
   const branding = ['README.md', 'llms.txt', 'SECURITY.md', '.github/CONTRIBUTING.md'];
