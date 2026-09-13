@@ -6,6 +6,12 @@ on:
       - 'build/**'
       - 'docs/**'
       - 'files/**'
+      - 'packages/paean-js/**'
+      - 'paean/**'
+      - 'scripts/paean/**'
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'llms.txt'
 
 permissions:
   contents: read
