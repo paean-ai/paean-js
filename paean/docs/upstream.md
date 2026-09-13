@@ -48,7 +48,7 @@ Review upstream release notes and the [migration guide](https://github.com/mrdoo
 
 `.github/workflows/paean-upstream.yml` checks stable releases daily at 03:17 UTC and supports manual dispatch. It creates one update branch per upstream release, runs SDK/browser/provenance checks plus upstream lint/unit/addon suites, and opens a PR. It does not auto-merge. Failures remain visible in Actions; no passing result or clean merge is fabricated.
 
-GitHub Actions must be enabled and permitted to create pull requests in repository/org settings. Default `GITHUB_TOKEN` permissions may be restricted by the organization. If automated PR creation is denied, the prepared branch can be used for a manual PR. Runs made with `GITHUB_TOKEN` do not recursively trigger ordinary push/PR workflows, so all required checks are executed inside the sync workflow itself. Maintainers can also dispatch the Paean SDK workflow on an update branch.
+GitHub Actions must be enabled. Default `GITHUB_TOKEN` permissions may be restricted by the organization. If automated PR creation is denied, the workflow keeps the prepared branch, reports a warning, and adds a manual PR link to its run summary. Runs made with `GITHUB_TOKEN` do not recursively trigger ordinary push/PR workflows, so all required checks are executed inside the sync workflow itself. Maintainers can also dispatch the Paean SDK workflow on an update branch.
 
 An existing update branch is left untouched. If its PR creation failed, create the PR from that branch. If the branch needs regeneration, inspect and deliberately replace it through normal maintenance rather than expecting the sync command to force-push it.
 

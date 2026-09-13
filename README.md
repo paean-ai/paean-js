@@ -116,7 +116,7 @@ node scripts/paean/sync-upstream.mjs --check
 node scripts/paean/sync-upstream.mjs --ref r186
 ```
 
-The workflow checks stable releases daily and supports manual dispatch. Updates become tested pull requests; they are never merged automatically. The command preserves common ancestry and refuses a dirty working tree. Read [the maintenance guide](paean/docs/upstream.md) before promoting an upstream release.
+The workflow checks stable releases daily and supports manual dispatch. It prepares tested update branches and opens pull requests when organization policy permits. Otherwise, the run summary links to a manual PR. Updates are never merged automatically. The command preserves common ancestry and refuses a dirty working tree. Read [the maintenance guide](paean/docs/upstream.md) before promoting an upstream release.
 
 ## Open source and model familiarity
 

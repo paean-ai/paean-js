@@ -90,4 +90,7 @@ jobs:
 
           Maintainer review is required before merging. Review the upstream migration guide and update versioned documentation and release notes. Updates are never merged automatically.
           BODY
-          gh pr create --base main --head "upstream/$UPSTREAM_REF" --title "Merge three.js $UPSTREAM_REF" --body-file "$RUNNER_TEMP/paean-upstream-pr.md"
+          if ! gh pr create --base main --head "upstream/$UPSTREAM_REF" --title "Merge three.js $UPSTREAM_REF" --body-file "$RUNNER_TEMP/paean-upstream-pr.md"; then
+            echo '::warning::The update branch is ready, but repository or organization policy prevented automatic PR creation. Open the review link in this run summary.'
+            echo "Review the tested update: https://github.com/$GITHUB_REPOSITORY/compare/main...upstream/$UPSTREAM_REF?expand=1" >> "$GITHUB_STEP_SUMMARY"
+          fi
