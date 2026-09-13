@@ -33,6 +33,12 @@ if (Number(ref.slice(1)) <= Number(metadata.ref.slice(1))) throw Error('Refusing
 // Release tags can live on separate release branches. Require shared ancestry, not a linear chain.
 git(['merge-base', metadata.commit, commit]);
 execFileSync('node', ['scripts/paean/check-upstream.mjs'], { cwd: root, stdio: 'inherit' });
+// DefinitelyTyped patch releases are independent of renderer patch releases.
+const revisionLine = upstreamPackage.version.split('.').slice(0, 2).join('.');
+const publishedTypes = JSON.parse(execFileSync('npm', ['view', `@types/three@${revisionLine}`, 'version', '--json'], { encoding: 'utf8' }));
+const typeVersions = (Array.isArray(publishedTypes) ? publishedTypes : [publishedTypes]).filter(version => typeof version === 'string' && /^\d+\.\d+\.\d+$/.test(version) && version.startsWith(revisionLine + '.'));
+const typesVersion = typeVersions.sort((a, b) => Number(b.split('.')[2]) - Number(a.split('.')[2]))[0];
+if (!typesVersion) throw Error(`Matching @types/three definitions are not yet available for ${revisionLine}.`);
 const branch = `upstream/${ref}`;
 git(['switch', '-c', branch]);
 const merge = spawnSync('git', ['merge', '--no-ff', '--no-commit', commit], { cwd: root, encoding: 'utf8' });
@@ -59,9 +65,10 @@ for (const path of ['README.md', 'llms.txt', 'SECURITY.md', '.github/CONTRIBUTIN
 }
 const sdkFile = resolve(root, 'packages/paean-js/package.json');
 const sdk = JSON.parse(await readFile(sdkFile, 'utf8'));
-sdk.peerDependencies.three = sdk.devDependencies.three = sdk.dependencies['@types/three'] = upstreamPackage.version;
+sdk.peerDependencies.three = sdk.devDependencies.three = upstreamPackage.version;
+sdk.dependencies['@types/three'] = typesVersion;
 await writeFile(sdkFile, JSON.stringify(sdk, null, 2) + '\n');
-await writeFile(metadataFile, JSON.stringify({ ...metadata, ref, commit, version: upstreamPackage.version }, null, 2) + '\n');
+await writeFile(metadataFile, JSON.stringify({ ...metadata, ref, commit, version: upstreamPackage.version, typesVersion }, null, 2) + '\n');
 const catalogFile = resolve(root, 'paean/api.json');
 const catalog = JSON.parse(await readFile(catalogFile, 'utf8'));
 catalog.upstream.version = upstreamPackage.version;

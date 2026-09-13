@@ -24,7 +24,7 @@ Adjacent three.js release tags may be on divergent release branches. The script 
 
 The four project-identity documents (`README.md`, `llms.txt`, `SECURITY.md`, and `.github/CONTRIBUTING.md`) retain Paean's version if they conflict; their new upstream contents are preserved separately. Any other merge conflict stops with the branch and merge state available for inspection. Resolve deliberately or run `git merge --abort`; do not resolve renderer conflicts by blindly choosing a side.
 
-If matching runtime/type packages have not reached npm, lockfile resolution fails and the update must wait or be repaired by a maintainer. A downgrade, moved release tag, or unrelated upstream history is rejected. Existing update branches are never overwritten.
+DefinitelyTyped patch numbers are independent of three.js patch numbers. The sync selects and pins the newest available type package in the same renderer revision line, records it as `typesVersion`, and validates the resulting consumer types. If that revision's type package has not reached npm, the update stops before creating a merge branch. Runtime/lockfile resolution failures still require a maintainer retry. A downgrade, moved release tag, or unrelated upstream history is rejected. Existing update branches are never overwritten.
 
 ## Required upgrade checks
 
