@@ -1,0 +1,93 @@
+name: Sync three.js
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Stable three.js tag (empty selects the latest release)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: paean-upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: main
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+      - name: Check stable upstream release
+        id: check
+        env:
+          REQUESTED_REF: ${{ inputs.ref }}
+        run: |
+          if [ -n "$REQUESTED_REF" ]; then
+            node scripts/paean/sync-upstream.mjs --check --ref "$REQUESTED_REF" > "$RUNNER_TEMP/upstream.json"
+          else
+            node scripts/paean/sync-upstream.mjs --check > "$RUNNER_TEMP/upstream.json"
+          fi
+          node --input-type=module -e 'import fs from "node:fs"; const result = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + "/upstream.json", "utf8")); fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${result.changed}\nref=${result.ref}\n`);'
+      - name: Avoid duplicate update branches
+        if: steps.check.outputs.changed == 'true'
+        id: existing
+        env:
+          UPSTREAM_REF: ${{ steps.check.outputs.ref }}
+        run: |
+          if git ls-remote --exit-code --heads origin "upstream/$UPSTREAM_REF" >/dev/null; then
+            echo 'exists=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'exists=false' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Prepare merge
+        if: steps.check.outputs.changed == 'true' && steps.existing.outputs.exists != 'true'
+        env:
+          UPSTREAM_REF: ${{ steps.check.outputs.ref }}
+        run: |
+          git config user.name 'paean-upstream[bot]'
+          git config user.email 'paean-upstream[bot]@users.noreply.github.com'
+          node scripts/paean/sync-upstream.mjs --ref "$UPSTREAM_REF"
+      - name: Validate merged SDK and upstream source
+        if: steps.check.outputs.changed == 'true' && steps.existing.outputs.exists != 'true'
+        run: |
+          node scripts/paean/check-upstream.mjs
+          npm ci --prefix packages/paean-js
+          npm run check --prefix packages/paean-js
+          cd packages/paean-js
+          npx playwright install --with-deps chromium
+          npm run test:browser
+      - name: Run upstream lint and unit suites
+        if: steps.check.outputs.changed == 'true' && steps.existing.outputs.exists != 'true'
+        run: |
+          npm ci
+          npm run lint
+          npm run test-unit
+          npm run test-unit-addons
+      - name: Open reviewed-update pull request
+        if: steps.check.outputs.changed == 'true' && steps.existing.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UPSTREAM_REF: ${{ steps.check.outputs.ref }}
+        run: |
+          git push origin "HEAD:refs/heads/upstream/$UPSTREAM_REF"
+          cat > "$RUNNER_TEMP/paean-upstream-pr.md" <<'BODY'
+          Merge the stable three.js release while keeping upstream-owned source unchanged. The Paean runtime and type dependencies are aligned with the recorded upstream revision.
+
+          Validation completed in the sync workflow: upstream provenance, SDK behavioral tests, TypeScript consumer, installed package, browser examples, upstream lint, and upstream unit/addon suites.
+
+          Maintainer review is required before merging. Review the upstream migration guide and update versioned documentation and release notes. Updates are never merged automatically.
+          BODY
+          gh pr create --base main --head "upstream/$UPSTREAM_REF" --title "Merge three.js $UPSTREAM_REF" --body-file "$RUNNER_TEMP/paean-upstream-pr.md"

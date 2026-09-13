@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/paean-ai/paean-js/raw/main/packages/paean-js/schemas/tilemap.schema.json",
+  "title": "Paean TileMap definition",
+  "description": "Top-down row-major frames. World origin is bottom-left. Runtime validates columns × rows and atlas references.",
+  "type": "object", "additionalProperties": false, "required": ["columns", "rows", "tiles"],
+  "properties": {
+    "columns": { "type": "integer", "minimum": 1 }, "rows": { "type": "integer", "minimum": 1 },
+    "tileSize": { "type": "number", "exclusiveMinimum": 0 },
+    "tiles": { "type": "array", "items": { "type": ["string", "null"] } },
+    "solid": { "type": "array", "items": { "type": "string" } }
+  }
+}

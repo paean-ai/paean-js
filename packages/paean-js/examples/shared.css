@@ -1,0 +1,32 @@
+:root { color-scheme: dark; font: 15px/1.6 system-ui, sans-serif; color: #e9eef5; background: #10151f; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100svh; }
+a { color: #8aefd2; text-underline-offset: 4px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; padding: 22px 5vw; border-bottom: 1px solid #2b3444; }
+.brand { color: white; text-decoration: none; font-weight: 800; letter-spacing: -.04em; font-size: 23px; }
+.brand span { color: #80e7bf; }
+nav { display: flex; gap: 20px; flex-wrap: wrap; margin-left: auto; font-size: 13px; }
+nav a { color: #a7b6ca; text-decoration: none; }
+nav a[aria-current] { color: #8aefd2; }
+main { width: min(1160px, 90vw); margin: 42px auto; }
+.eyebrow { color: #8aefd2; font-size: 11px; letter-spacing: .16em; font-weight: 750; text-transform: uppercase; }
+h1 { font-size: clamp(32px, 5vw, 56px); letter-spacing: -.045em; line-height: 1.1; margin: 14px 0; }
+h2 { font-size: 22px; letter-spacing: -.03em; }
+p { color: #a7b6ca; max-width: 760px; }
+.stage { display: grid; place-items: center; min-height: 320px; height: min(60vh, 560px); background: #0b1018; border: 1px solid #2b3444; border-radius: 12px; overflow: hidden; position: relative; margin-top: 28px; }
+canvas { display: block; max-width: 100%; touch-action: none; outline-offset: -3px; }
+canvas:focus-visible { outline: 2px solid #80e7bf; }
+.toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+button { border: 1px solid #374458; border-radius: 6px; padding: 10px 18px; font: inherit; font-size: 13px; cursor: pointer; background: #1b2636; color: #e9eef5; }
+button.primary { background: #85ebc5; color: #10251e; border-color: #85ebc5; font-weight: 700; }
+button:hover { filter: brightness(1.12); } button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.status { margin-left: auto; font-family: ui-monospace, monospace; font-size: 13px; color: #becbdd; }
+.note { font-size: 13px; color: #788ba5; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 40px; }
+.card { display: block; border: 1px solid #2b3444; border-radius: 10px; padding: 28px; color: inherit; text-decoration: none; background: #151e2c; }
+.card:hover { border-color: #85ebc5; }
+.card b { color: #85ebc5; font-family: ui-monospace, monospace; font-size: 12px; }
+.card p { font-size: 14px; }
+code { color: #bdd2e6; font-size: .9em; }
+.touch { display: flex; gap: 8px; padding-bottom: max(0px, var(--paean-safe-bottom, 0px)); }
+@media (max-width: 600px) { header { padding-top: max(18px, var(--paean-safe-top, 0px)); } nav { margin-left: 0; gap: 14px; } main { margin-top: 28px; } .cards { grid-template-columns: 1fr; } .stage { min-height: 200px; height: 300px; } .status { width: 100%; margin-left: 0; } }

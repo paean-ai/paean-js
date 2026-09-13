@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/paean-ai/paean-js/raw/main/packages/paean-js/schemas/skeleton.schema.json",
+  "title": "Paean Skeleton2D definition",
+  "description": "Y-up cutout bones and attachment slots. Radians. Runtime validation checks references and cycles.",
+  "type": "object", "additionalProperties": false, "required": ["bones"],
+  "$defs": { "name": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" } },
+  "properties": {
+    "bones": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false, "required": ["name"],
+        "properties": {
+          "name": { "$ref": "#/$defs/name" }, "parent": { "$ref": "#/$defs/name" },
+          "x": { "type": "number" }, "y": { "type": "number" }, "rotation": { "type": "number" },
+          "scaleX": { "type": "number" }, "scaleY": { "type": "number" }
+        }
+      }
+    },
+    "slots": {
+      "type": "array", "items": {
+        "type": "object", "additionalProperties": false, "required": ["name", "bone"],
+        "properties": {
+          "name": { "$ref": "#/$defs/name" }, "bone": { "$ref": "#/$defs/name" },
+          "x": { "type": "number" }, "y": { "type": "number" }, "order": { "type": "number" }
+        }
+      }
+    }
+  }
+}

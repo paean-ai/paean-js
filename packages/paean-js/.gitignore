@@ -1,0 +1,6 @@
+node_modules/
+dist/
+compat/
+playwright-report/
+test-results/
+*.tgz

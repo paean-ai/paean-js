@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "package": "@paean-ai/paean-js",
+  "version": "0.1.0",
+  "upstream": { "package": "three", "version": "0.186.0", "reference": "paean/upstream.json", "exports": "All upstream core exports are re-exported with original identity." },
+  "conventions": { "time": "seconds", "rotation": "radians", "worldYAxis": "up", "atlasOrigin": "top-left", "tileDataOrder": "row-major-top-down", "pixelWorldUnits": 1 },
+  "entryPoints": [".", "./game", "./webgpu", "./tsl", "./vector-svg", "./addons", "./addons/*", "./examples/jsm/*", "./examples/fonts/*", "./src/*", "./schemas/*"],
+  "gameExports": [
+    { "name": "Game2D", "kind": "class", "methods": ["start", "stop", "dispose"], "example": "packages/paean-js/examples/pixel.js" },
+    { "name": "FixedStepLoop", "kind": "class", "methods": ["advance", "start", "stop", "dispose"], "units": "seconds" },
+    { "name": "Input", "kind": "class", "methods": ["down", "justPressed", "justReleased", "axis", "setAction", "endFrame", "reset", "dispose"] },
+    { "name": "AssetStore", "kind": "class", "methods": ["load", "has", "dispose"] },
+    { "name": "Random", "kind": "class", "methods": ["next", "range", "int", "pick"], "properties": ["state"] },
+    { "name": "VectorShape", "kind": "class", "extends": "three.Mesh", "staticMethods": ["rectangle", "circle", "polygon"], "methods": ["dispose"] },
+    { "name": "Skeleton2D", "kind": "class", "extends": "three.Group", "methods": ["addSlot", "defineSkin", "setSkin", "createClip", "play", "update", "dispose"], "example": "packages/paean-js/examples/skeleton.js" },
+    { "name": "PixelAtlas", "kind": "class", "staticMethods": ["grid"], "methods": ["frame", "uv", "dispose"] },
+    { "name": "PixelSprite", "kind": "class", "extends": "three.Mesh", "methods": ["setFrame", "setFlip", "dispose"] },
+    { "name": "SpriteAnimator", "kind": "class", "methods": ["define", "play", "stop", "update"] },
+    { "name": "PixelViewport", "kind": "class", "methods": ["resize", "screenToWorld", "snap"] },
+    { "name": "TileMap", "kind": "class", "extends": "three.Mesh", "methods": ["getTile", "setTile", "setTiles", "pointToTile", "isSolid", "toJSONDefinition", "dispose"] },
+    { "name": "GridCollision", "kind": "class", "methods": ["overlaps", "move"] },
+    { "name": "importAseprite", "kind": "function", "returns": "{ atlas: PixelAtlas, clips: Record<string, SpriteClip> }" },
+    { "name": "importTiledLayer", "kind": "function", "returns": "TileMapDefinition" },
+    { "name": "PaeanPlatform", "kind": "class", "methods": ["connect", "requireAccess", "loadLocal", "saveLocal", "syncSave", "submitScore", "flushScores", "service", "dispose"] },
+    { "name": "PlatformUnavailableError", "kind": "class", "extends": "Error", "code": "sdk-too-old" },
+    { "name": "PAEAN_VERSION", "kind": "constant" }
+  ],
+  "optionalExports": [{ "name": "parseSVG", "entry": "./vector-svg", "kind": "function", "requires": "Browser DOMParser; trusted SVG fills only" }],
+  "notImplemented": ["Spine import", "DragonBones import", "Live2D runtime", "2D weighted deformation helpers", "inverse kinematics", "WebGPU-specific game materials", "authoritative multiplayer simulation"],
+  "validation": ["npm run check --prefix packages/paean-js", "npm run test:browser --prefix packages/paean-js", "node scripts/paean/check-upstream.mjs"]
+}

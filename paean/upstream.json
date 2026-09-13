@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/mrdoob/three.js.git",
+  "ref": "r186",
+  "commit": "148ef33ecb6d2502ff796d4554abd1549c95d519",
+  "version": "0.186.0",
+  "policy": "stable-release-pr",
+  "protectedPaths": ["src", "build", "examples", "test", "utils", "editor", "manual", "docs", "tsl", "package.json", "package-lock.json", "LICENSE"]
+}

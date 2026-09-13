@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/paean-ai/paean-js/raw/main/packages/paean-js/schemas/sprite-clip.schema.json",
+  "title": "Paean SpriteClip",
+  "type": "object", "additionalProperties": false, "required": ["frames"],
+  "properties": {
+    "frames": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "fps": { "type": "number", "exclusiveMinimum": 0 },
+    "durations": { "type": "array", "minItems": 1, "items": { "type": "number", "exclusiveMinimum": 0 } },
+    "loop": { "type": "boolean" }
+  },
+  "oneOf": [{ "properties": { "fps": true }, "required": ["fps"] }, { "properties": { "durations": true }, "required": ["durations"] }]
+}

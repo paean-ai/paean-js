@@ -1,0 +1,105 @@
+{
+  "name": "@paean-ai/paean-js",
+  "version": "0.1.0",
+  "description": "The Paean game SDK: three.js-compatible 3D, vector and skeletal 2D, pixel games, and 8x services.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Paean AI contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paean-ai/paean-js.git",
+    "directory": "packages/paean-js"
+  },
+  "homepage": "https://github.com/paean-ai/paean-js#readme",
+  "bugs": {
+    "url": "https://github.com/paean-ai/paean-js/issues"
+  },
+  "keywords": [
+    "paean",
+    "8x",
+    "three",
+    "threejs",
+    "game",
+    "2d",
+    "3d",
+    "pixel",
+    "skeletal-animation",
+    "praxis"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./game": {
+      "types": "./dist/game.d.ts",
+      "import": "./dist/game.js",
+      "require": "./dist/game.cjs"
+    },
+    "./webgpu": {
+      "types": "./dist/webgpu.d.ts",
+      "import": "./dist/webgpu.js"
+    },
+    "./tsl": {
+      "types": "./dist/tsl.d.ts",
+      "import": "./dist/tsl.js"
+    },
+    "./vector-svg": {
+      "types": "./dist/vector-svg.d.ts",
+      "import": "./dist/vector-svg.js"
+    },
+    "./addons": "./compat/examples/jsm/Addons.js",
+    "./addons/*": "./compat/examples/jsm/*",
+    "./examples/jsm/*": "./compat/examples/jsm/*",
+    "./examples/fonts/*": "./compat/examples/fonts/*",
+    "./src/*": "./compat/src/*",
+    "./schemas/*": "./schemas/*",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "./compat/src/nodes/**"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "compat",
+    "schemas",
+    "README.md",
+    "LICENSE",
+    "NOTICE",
+    "llms.txt"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/compat.mjs && node scripts/bundle.mjs",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "test:browser": "playwright test",
+    "test:types": "tsc -p test/types/tsconfig.json",
+    "test:package": "node scripts/package-test.mjs",
+    "check": "npm test && npm run test:types && npm run test:package",
+    "prepack": "npm run build",
+    "dev": "node scripts/serve.mjs"
+  },
+  "peerDependencies": {
+    "three": "0.186.0"
+  },
+  "dependencies": {
+    "@types/three": "0.186.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "ajv": "8.20.0",
+    "es-module-lexer": "2.0.0",
+    "esbuild": "0.28.2",
+    "three": "0.186.0",
+    "typescript": "7.0.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

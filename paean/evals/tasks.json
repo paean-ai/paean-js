@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "sdkVersion": "0.1.0",
+  "purpose": "Public seed tasks for framework generation and evaluation. Keep separate held-out tasks for measuring model generalization.",
+  "tasks": [
+    {
+      "id": "pixel-courier",
+      "prompt": "Build a keyboard and touch controlled pixel collection game with a 320x180 logical viewport, atlas animation, solid tiles, a jump, restart, five collectibles, and a persistent best score. Play locally without a host.",
+      "reference": "packages/paean-js/examples/pixel.js",
+      "requiredAPIs": ["Game2D", "PixelAtlas", "PixelSprite", "SpriteAnimator", "TileMap", "GridCollision", "PaeanPlatform"],
+      "acceptance": ["No console or network errors", "Movement and jump change game state", "No tunneling through ground", "All five collectibles are reachable", "Restart resets the run", "Best score survives reload", "Touch release never leaves an action stuck"]
+    },
+    {
+      "id": "vector-wardrobe",
+      "prompt": "Build a vector character with a parented bone hierarchy, a looping greeting animation, and two interchangeable outfits. Switching the outfit must preserve the current pose. Add a pause control.",
+      "reference": "packages/paean-js/examples/skeleton.js",
+      "requiredAPIs": ["Skeleton2D", "VectorShape", "FixedStepLoop"],
+      "acceptance": ["Native three.js Group/Mesh objects", "Bone transforms propagate to attachments", "Outfit switch changes visible attachments", "The pose is unchanged while paused", "Owned resources are released"]
+    },
+    {
+      "id": "native-three",
+      "prompt": "Port a standard three.js scene with a perspective camera, physically based material, lighting, and OrbitControls to Paean imports without changing renderer behavior.",
+      "reference": "packages/paean-js/examples/three.js",
+      "requiredAPIs": ["FixedStepLoop"],
+      "upstreamAPIs": ["Scene", "PerspectiveCamera", "MeshStandardMaterial", "WebGLRenderer", "OrbitControls"],
+      "acceptance": ["All imports resolve from one upstream revision", "Paean and three constructor identities match", "Orbit interaction changes the camera", "Rendering produces non-background pixels"]
+    },
+    {
+      "id": "preview-consent-and-save",
+      "prompt": "Add optional Paean cloud progress to a game. Preserve local play, never prompt at boot or in feed preview, gate paid access on a play tap, and merge cloud best score before writing.",
+      "reference": "packages/paean-js/test/platform.test.mjs",
+      "requiredAPIs": ["PaeanPlatform"],
+      "acceptance": ["No prompts in preview", "Declined access retains the demo", "Partial grants preserve supported services", "Failed reads never write cloud state", "Local edits during sync are preserved", "No credentials or fake production bridge"]
+    }
+  ]
+}

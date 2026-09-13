@@ -1,23 +1,37 @@
 {
   "extends": [
-    "config:base",
+    "config:recommended",
     ":disableDependencyDashboard",
     "helpers:pinGitHubActionDigests"
   ],
-  "timezone": "Asia/Tokyo",
-  "schedule": ["after 1am and before 7am every monday"],
+  "timezone": "Etc/UTC",
+  "schedule": [
+    "before 7am on monday"
+  ],
+  "automerge": false,
+  "ignorePaths": [
+    "package.json",
+    "package-lock.json",
+    "paean/upstream/**"
+  ],
   "packageRules": [
     {
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["patch", "minor", "pin", "digest"],
-      "groupName": "devDependencies (non-major)",
-      "automerge": true
+      "matchPackageNames": [
+        "three",
+        "@types/three"
+      ],
+      "enabled": false,
+      "description": "Renderer and type upgrades are managed together by the Paean upstream workflow."
     },
     {
-      "description": "ESLint v9 requires flat configs, not yet supported by our plugins. See https://github.com/mrdoob/three.js/pull/28354#issuecomment-2106528332",
-      "matchPackageNames": ["eslint"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
+      "matchFileNames": [
+        "packages/paean-js/package.json"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "groupName": "Paean development dependencies",
+      "automerge": false
     }
   ]
 }

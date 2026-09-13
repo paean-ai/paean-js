@@ -32,12 +32,8 @@ body:
   - type: textarea
     id: example
     attributes:
-      label: Live example
-      value: |
-        * [jsfiddle-latest-release WebGLRenderer](https://jsfiddle.net/3mrkqyea/)
-        * [jsfiddle-dev WebGLRenderer](https://jsfiddle.net/gcqx26jv/)
-        * [jsfiddle-latest-release WebGPURenderer](https://jsfiddle.net/mnqr9oj0/)
-        * [jsfiddle-dev WebGPURenderer](https://jsfiddle.net/xno7bmw0/)
+      label: Runnable reproduction
+      description: Link to a minimal repository or hosted example, or explain which Paean example to modify.
     validations:
       required: true
   - type: textarea
@@ -50,9 +46,9 @@ body:
   - type: input
     id: version
     attributes:
-      label: Version
-      description: What version of the library are you using?
-      placeholder: r
+      label: Paean JS and three.js versions
+      description: Include the SDK version, upstream revision, renderer, and optional Paean host version.
+      placeholder: Paean 0.1.0, three.js r186, WebGLRenderer, plain browser
     validations:
       required: true
   - type: dropdown

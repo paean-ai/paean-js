@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/paean-ai/paean-js/raw/main/packages/paean-js/schemas/atlas.schema.json",
+  "title": "Paean PixelAtlas definition",
+  "description": "Top-left, unrotated, untrimmed pixel rectangles. Runtime validation enforces frame bounds.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["width", "height", "frames"],
+  "properties": {
+    "width": { "type": "integer", "minimum": 1 },
+    "height": { "type": "integer", "minimum": 1 },
+    "frames": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object", "additionalProperties": false,
+        "required": ["x", "y", "width", "height"],
+        "properties": {
+          "x": { "type": "integer", "minimum": 0 }, "y": { "type": "integer", "minimum": 0 },
+          "width": { "type": "integer", "minimum": 1 }, "height": { "type": "integer", "minimum": 1 }
+        }
+      }
+    }
+  }
+}

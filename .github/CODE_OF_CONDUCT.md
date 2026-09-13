@@ -55,7 +55,8 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at hello@mrdoob.com. All
+reported privately to a Paean JS repository maintainer through a contact channel
+listed on their GitHub profile. Do not post sensitive reports in a public issue. All
 complaints will be reviewed and investigated and will result in a response that
 is deemed necessary and appropriate to the circumstances. The project team is
 obligated to maintain confidentiality with regard to the reporter of an incident.

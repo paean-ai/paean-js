@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Crystal courier — Paean JS</title><link rel="icon" href="data:,"><link rel="stylesheet" href="shared.css">
+<script type="importmap">{"imports":{"three":"../node_modules/three/build/three.module.js","@paean-ai/paean-js":"../dist/index.js"}}</script></head>
+<body><header><a class="brand" href="index.html">paean<span>.js</span></a><nav aria-label="Examples"><a href="pixel.html" aria-current="page">Pixel world</a><a href="skeleton.html">Vector wardrobe</a><a href="three.html">Native 3D</a></nav></header>
+<main><div class="eyebrow">01 / Pixel world</div><h1>Crystal courier</h1><p>Collect all five crystals. Arrow keys or A/D to move, Space to jump. The world stays sharp at a fixed 320 × 180 resolution.</p>
+<div class="stage" id="stage"><canvas id="game" aria-label="Crystal courier game" tabindex="0"></canvas></div>
+<div class="toolbar"><button class="primary" id="play">Play</button><button id="sync">Sync best score</button><div class="touch" aria-label="Touch controls"><button data-action="left" aria-label="Move left">←</button><button data-action="right" aria-label="Move right">→</button><button data-action="jump">Jump</button></div><output class="status" id="status" aria-live="polite">Ready</output></div>
+<p class="note" id="platform-status">Local play · Scores stay on this device until you choose to sync.</p></main><script type="module" src="pixel.js"></script></body></html>

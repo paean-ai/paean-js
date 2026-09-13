@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Help and Support
+  - name: Paean JS documentation
+    url: https://github.com/paean-ai/paean-js/blob/main/paean/docs/api.md
+    about: Check the API reference and compatibility boundaries first.
+  - name: Upstream three.js community
     url: https://discourse.threejs.org/
-    about: Please use the forum if you have questions or need help.
+    about: General three.js questions can be discussed with the upstream community.

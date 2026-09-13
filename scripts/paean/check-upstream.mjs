@@ -1,0 +1,19 @@
+import { execFileSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
+const metadata = JSON.parse(await readFile(resolve(root, 'paean/upstream.json'), 'utf8'));
+const sdk = JSON.parse(await readFile(resolve(root, 'packages/paean-js/package.json'), 'utf8'));
+const upstream = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
+if (metadata.repository !== 'https://github.com/mrdoob/three.js.git' || !/^r\d+$/.test(metadata.ref) || !/^[a-f0-9]{40}$/.test(metadata.commit)) throw Error('Invalid upstream metadata.');
+const canonicalRef = `refs/paean-upstream/tags/${metadata.ref}`;
+git(['fetch', '--no-tags', metadata.repository, `refs/tags/${metadata.ref}:${canonicalRef}`]);
+if (git(['rev-parse', `${canonicalRef}^{commit}`]) !== metadata.commit) throw Error('The upstream tag does not match the recorded commit.');
+git(['merge-base', '--is-ancestor', metadata.commit, 'HEAD']);
+if (metadata.version !== upstream.version || metadata.version !== sdk.peerDependencies.three || metadata.version !== sdk.devDependencies.three || metadata.version !== sdk.dependencies['@types/three']) throw Error('Upstream, runtime, and type versions must match.');
+const changed = git(['diff', '--name-only', metadata.commit, '--', ...metadata.protectedPaths]);
+if (changed) throw Error(`Upstream-owned files were modified:\n${changed}`);
+console.log(`Verified unmodified upstream ${metadata.ref} (${metadata.commit}) and aligned package versions.`);
