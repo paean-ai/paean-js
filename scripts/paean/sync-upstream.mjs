@@ -29,14 +29,24 @@ const commit = git(['rev-parse', `${target}^{commit}`]);
 const upstreamPackage = JSON.parse(git(['show', `${commit}:package.json`]));
 const changed = commit !== metadata.commit;
 if (check || !changed) { console.log(JSON.stringify({ changed, ref, commit, version: upstreamPackage.version })); process.exit(0); }
-git(['merge-base', '--is-ancestor', metadata.commit, commit]);
+if (Number(ref.slice(1)) <= Number(metadata.ref.slice(1))) throw Error('Refusing a downgrade or a moved release tag.');
+// Release tags can live on separate release branches. Require shared ancestry, not a linear chain.
+git(['merge-base', metadata.commit, commit]);
+execFileSync('node', ['scripts/paean/check-upstream.mjs'], { cwd: root, stdio: 'inherit' });
 const branch = `upstream/${ref}`;
 git(['switch', '-c', branch]);
 const merge = spawnSync('git', ['merge', '--no-ff', '--no-commit', commit], { cwd: root, encoding: 'utf8' });
-if (merge.status !== 0) {
-  const conflicts = git(['diff', '--name-only', '--diff-filter=U']).split('\n').filter(Boolean);
+if (merge.status !== 0 && !git(['diff', '--name-only', '--diff-filter=U'])) {
+  console.error(merge.stdout, merge.stderr);
+  throw Error(`Git could not start the merge on ${branch}. No branch was pushed.`);
+}
+// The preflight proved these files are pristine upstream. Select the complete new upstream tree,
+// including generated builds, instead of combining artifacts from divergent release branches.
+git(['restore', '--source', commit, '--staged', '--worktree', '--', ...metadata.protectedPaths]);
+const conflicts = git(['diff', '--name-only', '--diff-filter=U']).split('\n').filter(Boolean);
+if (conflicts.length) {
   const branding = ['README.md', 'llms.txt', 'SECURITY.md', '.github/CONTRIBUTING.md'];
-  if (!conflicts.length || conflicts.some(path => !branding.includes(path))) {
+  if (conflicts.some(path => !branding.includes(path))) {
     console.error(merge.stdout, merge.stderr);
     throw Error(`Manual merge resolution required on ${branch}. Inspect git status; use git merge --abort to cancel. No branch was pushed.`);
   }

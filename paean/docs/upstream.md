@@ -18,11 +18,13 @@ node scripts/paean/sync-upstream.mjs --check
 node scripts/paean/sync-upstream.mjs --ref r186
 ```
 
-An unchanged release is a no-op. For an update, the script creates `upstream/rNNN`, performs a real Git merge, updates recorded provenance, aligns `three` and `@types/three`, refreshes the SDK lockfile, preserves original upstream documentation in `paean/upstream`, and commits the merge. It never pushes or force-rewrites a branch.
+An unchanged release is a no-op. For an update, the script verifies the existing upstream tree, creates `upstream/rNNN`, performs a real Git merge, updates recorded provenance, aligns `three` and `@types/three`, refreshes the SDK lockfile, preserves original upstream documentation in `paean/upstream`, and commits the merge. It never pushes or force-rewrites a branch.
+
+Adjacent three.js release tags may be on divergent release branches. The script requires a shared ancestor and a strictly newer release number, rather than assuming linear tag ancestry. After proving that protected files have no Paean edits, it restores those paths from the complete target upstream tree. This preserves the merge parents while avoiding a mixture of two release builds or renderer versions.
 
 The four project-identity documents (`README.md`, `llms.txt`, `SECURITY.md`, and `.github/CONTRIBUTING.md`) retain Paean's version if they conflict; their new upstream contents are preserved separately. Any other merge conflict stops with the branch and merge state available for inspection. Resolve deliberately or run `git merge --abort`; do not resolve renderer conflicts by blindly choosing a side.
 
-If matching runtime/type packages have not reached npm, lockfile resolution fails and the update must wait or be repaired by a maintainer. An upstream ref that is not descended from the recorded baseline is rejected. Existing update branches are never overwritten.
+If matching runtime/type packages have not reached npm, lockfile resolution fails and the update must wait or be repaired by a maintainer. A downgrade, moved release tag, or unrelated upstream history is rejected. Existing update branches are never overwritten.
 
 ## Required upgrade checks
 
