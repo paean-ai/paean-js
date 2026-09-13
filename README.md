@@ -107,7 +107,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-Checks cover upstream export identity, game behavior, consumer types, an installed package, and browser rendering and interaction. Upstream test suites are retained separately. The sync workflow runs upstream lint and unit/addon suites before proposing an upgrade.
+Checks cover upstream export identity, game behavior, consumer types, an installed package, and browser rendering and interaction. Upstream test suites are retained separately. The sync workflow runs upstream lint and unit/addon suites before proposing an upgrade. See the [initial acceptance record](paean/docs/validation.md) for executed checks and their boundaries.
 
 ## Follow upstream
 
