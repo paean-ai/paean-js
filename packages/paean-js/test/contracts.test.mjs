@@ -16,6 +16,18 @@ test('machine-readable catalog exactly matches runtime exports and public method
     if (item.example) await access(new URL(`../../../${item.example}`, import.meta.url));
   }
 });
+test('catalog lists exact modular exports and their public methods', async () => {
+  const catalog = await json('../../../paean/api.json'), pkg = await json('../package.json');
+  assert.deepEqual(catalog.entryPoints.sort(), Object.keys(pkg.exports).sort());
+  for (const item of catalog.modules) {
+    const api = await import(`@paean-ai/paean-js/${item.entry.slice(2)}`);
+    assert.deepEqual(item.exports.map(symbol => symbol.name).sort(), Object.keys(api).sort(), item.entry);
+    for (const symbol of item.exports) {
+      for (const name of symbol.methods ?? []) assert.equal(typeof api[symbol.name].prototype[name], 'function', `${item.entry}: ${symbol.name}.${name}`);
+      for (const name of symbol.staticMethods ?? []) assert.equal(typeof api[symbol.name][name], 'function', `${symbol.name}.${name}`);
+    }
+  }
+});
 test('asset schemas accept supported definitions and reject malformed data', async () => {
   const cases = [
     ['atlas', { width: 16, height: 16, frames: { idle: { x: 0, y: 0, width: 16, height: 16 } } }, { width: -1, height: 16, frames: {} }],
@@ -33,6 +45,7 @@ test('evaluation tasks reference real examples and implemented APIs', async () =
   assert.equal(tasks.sdkVersion, GAME.PAEAN_VERSION);
   for (const task of tasks.tasks) {
     await access(new URL(`../../../${task.reference}`, import.meta.url));
-    for (const api of task.requiredAPIs) assert.ok(api in GAME, api);
+    const imported = Object.assign({}, ...await Promise.all(task.imports.map(entry => import(`@paean-ai/paean-js/${entry.slice(2)}`))));
+    for (const api of task.requiredAPIs) assert.ok(api in imported, api);
   }
 });

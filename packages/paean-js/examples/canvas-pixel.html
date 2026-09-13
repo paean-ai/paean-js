@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Canvas crystal run — Paean JS</title><link rel="icon" href="data:,"><link rel="stylesheet" href="shared.css"></head>
+<body><header><a class="brand" href="index.html">paean<span>.js</span></a><nav aria-label="Examples"><a href="canvas-pixel.html" aria-current="page">Canvas pixels</a><a href="canvas-vector.html">Canvas vectors</a><a href="three.html">Native 3D</a></nav></header>
+<main><div class="eyebrow">Independent pixel module · Canvas 2D</div><h1>Small pixels.<br>A complete little world.</h1><p>Collect all five crystals. Move with A/D or arrow keys. Jump with Space. This game loads the pixel module and shared runtime, without three.js or vector code.</p>
+<div class="stage" id="stage"><canvas id="game" aria-label="Pixel character collecting crystals" tabindex="0"></canvas></div>
+<div class="toolbar"><button class="primary" id="play">Play</button><div class="touch" aria-label="Touch controls"><button data-action="left" aria-label="Move left">←</button><button data-action="right" aria-label="Move right">→</button><button data-action="jump">Jump</button></div><output class="status" id="status" aria-live="polite">0 / 5 crystals · Ready</output></div>
+<p class="note">320 × 180 logical pixels, integer enlargement, atlas animation, editable tiles, and swept grid collision. All artwork is drawn locally into a tiny sprite sheet.</p></main><script type="module" src="canvas-pixel.js"></script></body></html>

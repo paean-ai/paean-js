@@ -1,4 +1,5 @@
-import * as PAEAN from '@paean-ai/paean-js';
+import * as PAEAN from '@paean-ai/paean-js/3d';
+import { FixedStepLoop } from '@paean-ai/paean-js/core';
 import { OrbitControls } from '@paean-ai/paean-js/addons/controls/OrbitControls.js';
 
 const stage = document.querySelector('#stage'), canvas = document.querySelector('#game');
@@ -11,7 +12,7 @@ const geometry = new PAEAN.TorusKnotGeometry(1, 0.32, 160, 24), material = new P
 const sculpture = new PAEAN.Mesh(geometry, material); scene.add(sculpture);
 const grid = new PAEAN.GridHelper(12, 24, 0x426072, 0x253d4e); grid.position.y = -1.8; scene.add(grid);
 const state = { paused: false };
-const loop = new PAEAN.FixedStepLoop({ update: dt => { if (!state.paused) sculpture.rotation.y += dt * 0.25; controls.update(dt); }, render: () => renderer.render(scene, camera) });
+const loop = new FixedStepLoop({ update: dt => { if (!state.paused) sculpture.rotation.y += dt * 0.25; controls.update(dt); }, render: () => renderer.render(scene, camera) });
 document.querySelector('#motion').addEventListener('click', () => { state.paused = !state.paused; document.querySelector('#motion').textContent = state.paused ? 'Resume rotation' : 'Pause rotation'; });
 const observer = new ResizeObserver(() => { renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(stage.clientWidth, stage.clientHeight); camera.aspect = stage.clientWidth / stage.clientHeight; camera.updateProjectionMatrix(); });
 observer.observe(stage); loop.start();

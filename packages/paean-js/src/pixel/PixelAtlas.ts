@@ -1,8 +1,8 @@
 import { ClampToEdgeWrapping, NearestFilter, SRGBColorSpace, Texture } from 'three';
 import { integer } from '../core/validate.js';
 
-export interface AtlasFrame { x: number; y: number; width: number; height: number }
-export interface PixelAtlasDefinition { width: number; height: number; frames: Readonly<Record<string, AtlasFrame>> }
+export type { AtlasFrame, PixelAtlasDefinition } from '../formats/types.js';
+import type { AtlasFrame, PixelAtlasDefinition } from '../formats/types.js';
 
 /** Named, unrotated atlas frames. Rectangles use top-left image pixels, independent of world coordinates. */
 export class PixelAtlas {

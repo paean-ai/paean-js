@@ -4,7 +4,7 @@ The native definitions are plain JSON-shaped data described by schemas in `packa
 
 ## Coordinates and atlas definition
 
-Atlas rectangles use top-left source-image pixels. The game world is Y-up, and sprites are centered. Native frames are unrotated and untrimmed. Keep transparent padding in the original frame if needed to maintain an attachment pivot. Texture source orientation must match ordinary three.js image textures.
+Atlas rectangles use top-left source-image pixels. The game world is Y-up, and sprites are centered. Frames are unrotated and untrimmed. Keep transparent padding in the original frame if needed to maintain an attachment pivot. Canvas SpriteSheet uses decoded Canvas image sources; native PixelAtlas uses ordinary three.js image textures.
 
 ```json
 {
@@ -17,7 +17,7 @@ Atlas rectangles use top-left source-image pixels. The game world is Y-up, and s
 }
 ```
 
-The texture is loaded separately with existing three.js loaders. Metadata contains no implicit URL fetch or network behavior. `PixelAtlas.grid` provides the standard regular-sheet convention: decimal string frame names, row-major from the top-left, no margins or spacing.
+Load and decode the Canvas image separately for SpriteSheet, or use an existing three.js loader for a native PixelAtlas texture. Metadata contains no implicit URL fetch or network behavior. `SpriteSheet.grid` and `PixelAtlas.grid` provide the same regular-sheet convention: decimal string frame names, row-major from the top-left, no margins or spacing.
 
 ## Aseprite JSON
 

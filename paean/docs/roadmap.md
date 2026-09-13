@@ -1,12 +1,12 @@
 # Scope and roadmap
 
-Paean JS 0.1.0 establishes the compatibility boundary and usable game primitives. The implementation, tests, and examples are the source of truth. The following distinction prevents aspirational features from being mistaken for shipped capabilities.
+Paean JS 0.2.0 adds independently loadable Canvas vector and pixel modules to the native-three compatibility boundary. The implementation, tests, and examples are the source of truth. The following distinction prevents aspirational features from being mistaken for shipped capabilities.
 
 | Area | Shipped | Potential future work |
 | --- | --- | --- |
-| Renderer | Native three.js exports, aliases, WebGPU/TSL namespaces | Game-specific node materials and a WebGPU validation matrix |
-| Vector | Shapes, holes, polygons, trusted SVG fills | Stroke tessellation, gradient materials, batching, richer SVG support |
-| Skeleton | Hierarchical cutout bones, native clips, crossfade, slots, outfits | 2D weighted deformation, constraints, inverse kinematics, editor tooling |
+| Renderer | Independent Canvas 2D and native three.js entries, aliases, WebGPU/TSL namespaces | Game-specific node materials and a WebGPU validation matrix |
+| Vector | Canvas Path2D fills/strokes, holes, polygons and SVG path data; native-three shapes and trusted SVG fills | GPU stroke tessellation, native-three gradient materials, batching, richer SVG-document support |
+| Skeleton | Canvas Rig2D and native-three Skeleton2D, hierarchical cutouts, fades, slots, outfits | 2D weighted deformation, constraints, inverse kinematics, editor tooling |
 | Pixel | Atlases, variable-duration clips, integer enlargement, tile layers | Trimmed/rotated atlas metadata, chunk streaming, per-tile UV transforms |
 | Authoring | Aseprite JSON and limited Tiled JSON conversion | Additional importers with explicit compatibility and licensing tests |
 | Runtime | Fixed-step loop, input actions, seeded random, resource ownership | Scene transition helpers, gamepad profiles, deterministic replay recordings |

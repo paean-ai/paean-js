@@ -2,14 +2,8 @@ import { AnimationClip, AnimationMixer, Bone, Group, NumberKeyframeTrack } from 
 import type { AnimationAction, Object3D } from 'three';
 import { delta, finite, positive } from '../core/validate.js';
 
-export interface Bone2DDefinition {
-  name: string; parent?: string; x?: number; y?: number; rotation?: number; scaleX?: number; scaleY?: number;
-}
-export interface Slot2DDefinition { name: string; bone: string; x?: number; y?: number; order?: number }
-export interface Skeleton2DDefinition { bones: readonly Bone2DDefinition[]; slots?: readonly Slot2DDefinition[] }
-export interface BoneTrack {
-  bone: string; property: 'x' | 'y' | 'rotation' | 'scaleX' | 'scaleY'; times: readonly number[]; values: readonly number[];
-}
+export type { Bone2DDefinition, Slot2DDefinition, Skeleton2DDefinition, BoneTrack } from '../formats/types.js';
+import type { Slot2DDefinition, Skeleton2DDefinition, BoneTrack } from '../formats/types.js';
 
 const identifier = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const properties = { x: 'position[x]', y: 'position[y]', rotation: 'rotation[z]', scaleX: 'scale[x]', scaleY: 'scale[y]' };

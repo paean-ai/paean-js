@@ -2,12 +2,8 @@ import { BufferGeometry, DoubleSide, Float32BufferAttribute, Mesh, MeshBasicMate
 import { PixelAtlas } from './PixelAtlas.js';
 import { finite, integer, positive } from '../core/validate.js';
 
-export interface TileMapDefinition {
-  columns: number; rows: number; tileSize?: number;
-  /** Row-major, top-to-bottom. null is empty; frame names are strings. */
-  tiles: readonly (string | null)[];
-  solid?: readonly string[];
-}
+export type { TileMapDefinition } from '../formats/types.js';
+import type { TileMapDefinition } from '../formats/types.js';
 
 /** A single draw-call, editable tile layer. Local origin is bottom-left; data row zero is the top. */
 export class TileMap extends Mesh<BufferGeometry, MeshBasicMaterial> {

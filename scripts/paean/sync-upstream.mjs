@@ -72,7 +72,7 @@ for (const path of ['README.md', 'llms.txt', 'SECURITY.md', '.github/CONTRIBUTIN
 const sdkFile = resolve(root, 'packages/paean-js/package.json');
 const sdk = JSON.parse(await readFile(sdkFile, 'utf8'));
 sdk.peerDependencies.three = sdk.devDependencies.three = upstreamPackage.version;
-sdk.dependencies['@types/three'] = typesVersion;
+sdk.peerDependencies['@types/three'] = sdk.devDependencies['@types/three'] = typesVersion;
 await writeFile(sdkFile, JSON.stringify(sdk, null, 2) + '\n');
 await writeFile(metadataFile, JSON.stringify({ ...metadata, ref, commit, version: upstreamPackage.version, typesVersion }, null, 2) + '\n');
 const catalogFile = resolve(root, 'paean/api.json');

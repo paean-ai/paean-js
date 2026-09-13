@@ -1,36 +1,145 @@
 {
   "schemaVersion": 1,
-  "sdkVersion": "0.1.0",
+  "sdkVersion": "0.2.0",
   "purpose": "Public seed tasks for framework generation and evaluation. Keep separate held-out tasks for measuring model generalization.",
   "tasks": [
     {
       "id": "pixel-courier",
       "prompt": "Build a keyboard and touch controlled pixel collection game with a 320x180 logical viewport, atlas animation, solid tiles, a jump, restart, five collectibles, and a persistent best score. Play locally without a host.",
       "reference": "packages/paean-js/examples/pixel.js",
-      "requiredAPIs": ["Game2D", "PixelAtlas", "PixelSprite", "SpriteAnimator", "TileMap", "GridCollision", "PaeanPlatform"],
-      "acceptance": ["No console or network errors", "Movement and jump change game state", "No tunneling through ground", "All five collectibles are reachable", "Restart resets the run", "Best score survives reload", "Touch release never leaves an action stuck"]
+      "requiredAPIs": [
+        "Game2D",
+        "PixelAtlas",
+        "PixelSprite",
+        "SpriteAnimator",
+        "TileMap",
+        "GridCollision",
+        "PaeanPlatform"
+      ],
+      "acceptance": [
+        "No console or network errors",
+        "Movement and jump change game state",
+        "No tunneling through ground",
+        "All five collectibles are reachable",
+        "Restart resets the run",
+        "Best score survives reload",
+        "Touch release never leaves an action stuck"
+      ],
+      "imports": [
+        "./3d/pixel",
+        "./3d/vector",
+        "./core",
+        "./platform"
+      ]
     },
     {
       "id": "vector-wardrobe",
       "prompt": "Build a vector character with a parented bone hierarchy, a looping greeting animation, and two interchangeable outfits. Switching the outfit must preserve the current pose. Add a pause control.",
       "reference": "packages/paean-js/examples/skeleton.js",
-      "requiredAPIs": ["Skeleton2D", "VectorShape", "FixedStepLoop"],
-      "acceptance": ["Native three.js Group/Mesh objects", "Bone transforms propagate to attachments", "Outfit switch changes visible attachments", "The pose is unchanged while paused", "Owned resources are released"]
+      "requiredAPIs": [
+        "Skeleton2D",
+        "VectorShape",
+        "FixedStepLoop"
+      ],
+      "acceptance": [
+        "Native three.js Group/Mesh objects",
+        "Bone transforms propagate to attachments",
+        "Outfit switch changes visible attachments",
+        "The pose is unchanged while paused",
+        "Owned resources are released"
+      ],
+      "imports": [
+        "./3d/vector",
+        "./core"
+      ]
     },
     {
       "id": "native-three",
       "prompt": "Port a standard three.js scene with a perspective camera, physically based material, lighting, and OrbitControls to Paean imports without changing renderer behavior.",
       "reference": "packages/paean-js/examples/three.js",
-      "requiredAPIs": ["FixedStepLoop"],
-      "upstreamAPIs": ["Scene", "PerspectiveCamera", "MeshStandardMaterial", "WebGLRenderer", "OrbitControls"],
-      "acceptance": ["All imports resolve from one upstream revision", "Paean and three constructor identities match", "Orbit interaction changes the camera", "Rendering produces non-background pixels"]
+      "requiredAPIs": [
+        "FixedStepLoop"
+      ],
+      "upstreamAPIs": [
+        "Scene",
+        "PerspectiveCamera",
+        "MeshStandardMaterial",
+        "WebGLRenderer",
+        "OrbitControls"
+      ],
+      "acceptance": [
+        "All imports resolve from one upstream revision",
+        "Paean and three constructor identities match",
+        "Orbit interaction changes the camera",
+        "Rendering produces non-background pixels",
+        "No Paean 2D or platform modules requested"
+      ],
+      "imports": [
+        "./3d",
+        "./core"
+      ]
     },
     {
       "id": "preview-consent-and-save",
       "prompt": "Add optional Paean cloud progress to a game. Preserve local play, never prompt at boot or in feed preview, gate paid access on a play tap, and merge cloud best score before writing.",
       "reference": "packages/paean-js/test/platform.test.mjs",
-      "requiredAPIs": ["PaeanPlatform"],
-      "acceptance": ["No prompts in preview", "Declined access retains the demo", "Partial grants preserve supported services", "Failed reads never write cloud state", "Local edits during sync are preserved", "No credentials or fake production bridge"]
+      "requiredAPIs": [
+        "PaeanPlatform"
+      ],
+      "acceptance": [
+        "No prompts in preview",
+        "Declined access retains the demo",
+        "Partial grants preserve supported services",
+        "Failed reads never write cloud state",
+        "Local edits during sync are preserved",
+        "No credentials or fake production bridge"
+      ],
+      "imports": [
+        "./platform"
+      ]
+    },
+    {
+      "id": "independent-canvas-vector",
+      "prompt": "Build a Canvas 2D vector character with an animated cutout rig and two outfits, using only the 2d and vector entries. Preserve the paused pose on outfit changes.",
+      "reference": "packages/paean-js/examples/canvas-vector.js",
+      "imports": [
+        "./2d",
+        "./vector"
+      ],
+      "requiredAPIs": [
+        "CanvasGame",
+        "Rig2D",
+        "VectorPath"
+      ],
+      "acceptance": [
+        "Runs without three.js installed",
+        "No pixel or platform modules loaded",
+        "Outfit changes visible pixels without changing the paused pose",
+        "High-DPI framebuffer scales with display density"
+      ]
+    },
+    {
+      "id": "independent-canvas-pixel",
+      "prompt": "Build a 320x180 pixel collection game with keyboard/touch input, jumping, sprite animation, grid collision, five reachable crystals and restart. Import the pixel entry only.",
+      "reference": "packages/paean-js/examples/canvas-pixel.js",
+      "imports": [
+        "./pixel"
+      ],
+      "requiredAPIs": [
+        "PixelGame",
+        "SpriteSheet",
+        "Sprite2D",
+        "FrameAnimator",
+        "TileLayer",
+        "GridCollision"
+      ],
+      "acceptance": [
+        "Runs with WebGL disabled and no three.js installation",
+        "No vector or platform modules loaded",
+        "All crystals reachable through normal controls",
+        "Integer enlargement and nearest sampling",
+        "Restart resets the run"
+      ]
     }
   ]
 }

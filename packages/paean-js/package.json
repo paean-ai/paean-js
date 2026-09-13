@@ -1,6 +1,6 @@
 {
   "name": "@paean-ai/paean-js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The Paean game SDK: three.js-compatible 3D, vector and skeletal 2D, pixel games, and 8x services.",
   "type": "module",
   "license": "MIT",
@@ -60,7 +60,53 @@
     "./examples/fonts/*": "./compat/examples/fonts/*",
     "./src/*": "./compat/src/*",
     "./schemas/*": "./schemas/*",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
+    },
+    "./2d": {
+      "types": "./dist/2d.d.ts",
+      "import": "./dist/2d.js",
+      "require": "./dist/2d.cjs"
+    },
+    "./vector": {
+      "types": "./dist/vector.d.ts",
+      "import": "./dist/vector.js",
+      "require": "./dist/vector.cjs"
+    },
+    "./pixel": {
+      "types": "./dist/pixel.d.ts",
+      "import": "./dist/pixel.js",
+      "require": "./dist/pixel.cjs"
+    },
+    "./platform": {
+      "types": "./dist/platform.d.ts",
+      "import": "./dist/platform.js",
+      "require": "./dist/platform.cjs"
+    },
+    "./formats": {
+      "types": "./dist/formats.d.ts",
+      "import": "./dist/formats.js",
+      "require": "./dist/formats.cjs"
+    },
+    "./3d": {
+      "types": "./dist/3d.d.ts",
+      "import": "./dist/3d.js",
+      "require": "./dist/3d.cjs"
+    },
+    "./3d/vector": {
+      "types": "./dist/three-vector.d.ts",
+      "import": "./dist/three-vector.js",
+      "require": "./dist/three-vector.cjs"
+    },
+    "./3d/pixel": {
+      "types": "./dist/three-pixel.d.ts",
+      "import": "./dist/three-pixel.js",
+      "require": "./dist/three-pixel.cjs"
+    },
+    "./bundles/*": "./dist/bundles/*"
   },
   "sideEffects": [
     "./compat/src/nodes/**"
@@ -86,9 +132,7 @@
     "dev": "node scripts/serve.mjs"
   },
   "peerDependencies": {
-    "three": "0.186.0"
-  },
-  "dependencies": {
+    "three": "0.186.0",
     "@types/three": "0.186.0"
   },
   "devDependencies": {
@@ -97,9 +141,18 @@
     "es-module-lexer": "2.0.0",
     "esbuild": "0.28.2",
     "three": "0.186.0",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "@types/three": "0.186.0"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": true
+    },
+    "@types/three": {
+      "optional": true
+    }
   }
 }

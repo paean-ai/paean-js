@@ -14,7 +14,7 @@ git(['fetch', '--no-tags', metadata.repository, `refs/tags/${metadata.ref}:${can
 if (git(['rev-parse', `${canonicalRef}^{commit}`]) !== metadata.commit) throw Error('The upstream tag does not match the recorded commit.');
 git(['merge-base', '--is-ancestor', metadata.commit, 'HEAD']);
 if (metadata.version !== upstream.version || metadata.version !== sdk.peerDependencies.three || metadata.version !== sdk.devDependencies.three) throw Error('Upstream and runtime versions must match.');
-if (metadata.typesVersion !== sdk.dependencies['@types/three'] || metadata.typesVersion.split('.').slice(0, 2).join('.') !== metadata.version.split('.').slice(0, 2).join('.')) throw Error('Type definitions must be pinned to the same upstream revision line.');
+if (metadata.typesVersion !== sdk.peerDependencies['@types/three'] || metadata.typesVersion !== sdk.devDependencies['@types/three'] || metadata.typesVersion.split('.').slice(0, 2).join('.') !== metadata.version.split('.').slice(0, 2).join('.')) throw Error('Type definitions must be pinned to the same upstream revision line.');
 const changed = git(['diff', '--name-only', metadata.commit, '--', ...metadata.protectedPaths]);
 if (changed) throw Error(`Upstream-owned files were modified:\n${changed}`);
 console.log(`Verified unmodified upstream ${metadata.ref} (${metadata.commit}) and aligned package versions.`);

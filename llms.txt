@@ -2,11 +2,13 @@
 
 > Open-source Paean / 8x game SDK with native three.js APIs, vector and skeletal 2D, outfits, and standardized pixel-game modules.
 
-Package: @paean-ai/paean-js. SDK source: packages/paean-js/src. The root package is upstream three, not the Paean SDK. Runtime and types must use the exact version in paean/upstream.json. Read package.json for the current SDK version.
+Package: @paean-ai/paean-js. SDK source: packages/paean-js/src. The root package is upstream three, not the Paean SDK. For 3D, optional renderer/type peers must use the versions in paean/upstream.json. Canvas 2D does not require either peer. Import /2d + /vector for Canvas vector games, /pixel for Canvas pixel games, /3d for native three.js, /core for shared runtime, /formats for asset data, and /platform only when needed. Root and /game are legacy aggregates. Canvas Node2D and three.Object3D are separate scene graphs. Read package.json for the current SDK version.
 
 ## Learn
 
 - [Quick start](https://github.com/paean-ai/paean-js/blob/main/README.md)
+- [Modular imports and migration](https://github.com/paean-ai/paean-js/blob/main/paean/docs/modules.md)
+- [Architecture](https://github.com/paean-ai/paean-js/blob/main/paean/docs/architecture.md)
 - [API reference](https://github.com/paean-ai/paean-js/blob/main/paean/docs/api.md)
 - [Compatibility](https://github.com/paean-ai/paean-js/blob/main/paean/docs/compatibility.md)
 - [Agent and Praxis guide](https://github.com/paean-ai/paean-js/blob/main/paean/docs/agents.md)

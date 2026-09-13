@@ -1,4 +1,6 @@
-import { Scene, OrthographicCamera, WebGLRenderer, Group, FixedStepLoop, Skeleton2D, VectorShape } from '@paean-ai/paean-js';
+import { Scene, OrthographicCamera, WebGLRenderer, Group } from '@paean-ai/paean-js/3d';
+import { FixedStepLoop } from '@paean-ai/paean-js/core';
+import { Skeleton2D, VectorShape } from '@paean-ai/paean-js/3d/vector';
 import { parseSVG } from '../dist/vector-svg.js';
 
 const stage = document.querySelector('#stage'), canvas = document.querySelector('#game');

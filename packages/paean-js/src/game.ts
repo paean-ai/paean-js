@@ -24,4 +24,4 @@ export { GridCollision } from './pixel/GridCollision.js';
 export type { AABB, GridMove } from './pixel/GridCollision.js';
 export { PaeanPlatform, PlatformUnavailableError } from './platform/PaeanPlatform.js';
 export type { PlatformOptions, PlatformMode, PaeanHostSDK, AccessResult, SaveResult, StorageLike, Json } from './platform/PaeanPlatform.js';
-export const PAEAN_VERSION = '0.1.0';
+export { PAEAN_VERSION } from './version.js';

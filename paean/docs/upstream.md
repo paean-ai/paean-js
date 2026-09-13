@@ -26,6 +26,12 @@ The four project-identity documents (`README.md`, `llms.txt`, `SECURITY.md`, and
 
 DefinitelyTyped patch numbers are independent of three.js patch numbers. The sync selects and pins the newest available type package in the same renderer revision line, records it as `typesVersion`, and validates the resulting consumer types. If that revision's type package has not reached npm, the update stops before creating a merge branch. Runtime/lockfile resolution failures still require a maintainer retry. A downgrade, moved release tag, or unrelated upstream history is rejected. Existing update branches are never overwritten.
 
+## Independent renderer promotion
+
+`/3d` is a pure upstream re-export; it contains no Paean runtime, Canvas, vector, pixel, or platform imports. Renderer upgrades keep the Canvas implementation and game API version unchanged unless a separate game change is intentional. Canvas entries do not import renderer types, so their consumers do not need a new renderer or type package when the 3D baseline moves.
+
+Synchronization updates both optional `three` / `@types/three` peer pins and their development copies, plus provenance, lockfiles, and generated upstream proxies. Exact pins describe a tested compatibility contract; do not widen them to accept untested revisions. A desired stable tag can be promoted immediately through the command above or manual workflow dispatch, independently of the daily schedule. Branches remain reviewable and are never auto-merged.
+
 ## Required upgrade checks
 
 ```sh
@@ -43,6 +49,8 @@ npm run test-unit-addons
 ```
 
 Review upstream release notes and the [migration guide](https://github.com/mrdoob/three.js/wiki/Migration-Guide). Audit import paths, material behavior, color management, renderer requirements, resource disposal, and addon/type changes. Update versioned prose, example revision labels, `paean/api.json`, and the changelog. Broader three.js rendering suites remain available at the repository root when an upgrade needs them; the entire upstream visual baseline is not run for every game-layer edit.
+
+The SDK check includes renderer-free installation and types, complete-entry size budgets, transitive module-boundary checks, and exact `/3d` namespace identity. The browser suite proves Canvas examples work with WebGL disabled and that the native 3D example loads no Paean 2D modules. These gates apply to every upstream update.
 
 ## Automation
 

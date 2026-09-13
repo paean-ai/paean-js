@@ -1,6 +1,84 @@
 # Paean API reference
 
-Import the following from `@paean-ai/paean-js` or the narrower `@paean-ai/paean-js/game`. Generated TypeScript declarations are the precise signature reference. Upstream classes retain their [three.js documentation](https://threejs.org/docs/).
+Use the selective entry points below for new code. The root and `/game` retain the original native-three game API. Generated TypeScript declarations are the precise signature reference. Upstream classes retain their [three.js documentation](https://threejs.org/docs/).
+
+## Entry selection
+
+| Entry | Public runtime exports |
+| --- | --- |
+| `/core` | FixedStepLoop, Input, AssetStore, Random, PAEAN_VERSION |
+| `/2d` | Node2D, CanvasGame |
+| `/vector` | VectorPath, Rig2D |
+| `/pixel` | SpriteSheet, Sprite2D, FrameAnimator, TileLayer, PixelGame, GridCollision |
+| `/formats` | parseAseprite, importTiledLayer; shared asset types |
+| `/platform` | PaeanPlatform, PlatformUnavailableError |
+| `/3d` | Exact upstream three.js namespace |
+| `/3d/vector` | VectorShape, Skeleton2D |
+| `/3d/pixel` | Game2D, PixelAtlas, PixelSprite, SpriteAnimator, PixelViewport, TileMap, GridCollision, importAseprite, importTiledLayer |
+
+The first six entries have no three.js runtime or type dependency. Native-three adapters require the optional pinned renderer peer. See [modular examples and migration](modules.md) for installation, browser delivery, and the distinction between Node2D and Object3D.
+
+## Node2D (`/2d`)
+
+`new Node2D()` creates a Canvas transform/group. Mutable properties are `name`, `x`, `y`, `rotation`, `scaleX`, `scaleY`, `visible`, `opacity`, and sibling painter `order`. Defaults are identity transform, visible, opacity 1, order 0. Supply finite transform values; radians and Y-up coordinates apply. Children with equal order retain insertion order. Opacity multiplies through the hierarchy.
+
+- `add(...nodes)` reparents after validating the whole operation; cycles and non-Node2D attachments throw. `remove(node)` and `clear()` detach without disposing children. All return the parent for chaining.
+- `parent` and `children` expose the hierarchy for reading. Change it only through add/remove/clear.
+- `localMatrix()` / `worldMatrix()` return Canvas affine `[a, b, c, d, e, f]` tuples. `localToWorld({x,y})` / `worldToLocal({x,y})` return new points. Inverting a zero-scale transform throws.
+- `render(context)` applies transform/opacity and restores Canvas state even if drawing throws. Subclasses implement protected `draw(context)` with Y-up local coordinates. The game calls rendering automatically.
+
+These are Canvas objects, not three.js Object3D instances. Canvas nodes own no GPU resources and need no generic dispose method. Detach unused objects and release application resources explicitly.
+
+## CanvasGame (`/2d`) and PixelGame (`/pixel`)
+
+`new CanvasGame({ canvas?, width = 320, height = 180, frequency = 60, pixelArt = false, background = '#151b2a', update?, beforeRender?, onError? })`
+
+Creates a Canvas 2D context, Node2D scene, `{ x: 0, y: 0, zoom: 1 }` bottom-left camera, scoped Input, AssetStore, and FixedStepLoop. `canvas`, `context`, `scene`, `camera`, `input`, `assets`, `loop`, logical `width`/`height`, and `pixelArt` are readable. `background` is a CSS color or null for transparency. Callbacks receive `(seconds, game)` and `(interpolationAlpha, game)` respectively. Construct with a browser canvas that has not already acquired a different context. Importing the module itself requires no DOM.
+
+`PixelGame` accepts the same options except `pixelArt`, which is always true.
+
+- `resize(cssWidth, cssHeight, pixelRatio = ownerWindow.devicePixelRatio)` fits the logical world into available positive CSS dimensions. Vector mode allocates a display-density framebuffer. Pixel mode keeps exactly the logical framebuffer, disables smoothing, enlarges by integer CSS factors, and shrinks fractionally only when necessary.
+- `screenToWorld(clientX, clientY)` converts viewport pointer coordinates using the actual canvas bounds, camera translation and zoom. It rejects zero-sized CSS bounds. The canvas content box should have no CSS border/padding/transform; put decoration on a wrapper.
+- `render()` draws one frame; camera zoom must be positive. Keep pixel camera positions and sprite display transforms on logical pixels for crisp scrolling. Simulation positions can remain fractional.
+- `start()` / `stop()` control the loop. Visibility changes pause and resume without catch-up bursts; stopping while hidden cancels resume. `loop.advance(seconds)` supports manual simulation.
+- `dispose()` is idempotent. It releases listeners, loop, and owned assets, and detaches scene children. It does not remove the DOM canvas or close caller-owned source images. Render/start/resize/conversion after disposal throw.
+
+## VectorPath (`/vector`)
+
+`new VectorPath(path: Path2D, style?)` retains a Canvas Path2D. Style contains `fill` (default white), `stroke` (default absent), positive `lineWidth` (default 1), and `fillRule` (`nonzero` or `evenodd`). Fill/stroke accept CSS strings, CanvasGradient, CanvasPattern, or null. Use the `style` object to change drawing styles.
+
+Factories: `rectangle(width, height, style?)` and `circle(radius, style?)` are centered; `polygon([[x,y], ...], style?)` closes three or more points; `fromSVGPath(data, style?)` accepts only SVG path-data syntax, not a whole SVG document. Native Path2D supports holes, curves, and strokes. SVG source coordinates are usually Y-down; set the returned node's `scaleY = -1` to preserve that source orientation in a Y-up world. Path construction needs browser Path2D; import does not.
+
+## Rig2D (`/vector`)
+
+`new Rig2D(definition)` accepts the same `Skeleton2DDefinition` and skeleton schema as the native-three rig. `bones` and `slots` are maps of Node2D. Bone properties are scalar `x`, `y`, `rotation`, `scaleX`, `scaleY`. Read these maps and animate transforms; do not replace entries or reparent rig bones/slots. Attach art only through slots. The rig reserves its child hierarchy for bones and renders slots in global `order` within the rig.
+
+- `addSlot({name, bone, x?, y?, order?})` validates identifiers and references and returns a slot Node2D.
+- `defineSkin(name, attachments)` registers a complete record of distinct, caller-owned Node2D attachments. `setSkin(name)` validates before modifying any slot, detaches the previous outfit, and leaves omitted slots empty. Bone pose is retained. Ancestors, internal rig nodes, repeated nodes, and nested attachments within one skin are rejected.
+- `createClip(name, durationSeconds, tracks, loop = true)` returns an immutable RigClip bound to this rig. Each track has `bone`, `property`, strictly increasing `times`, and matching numeric `values`. Times must lie within the positive duration. Duplicate bone/property tracks are rejected.
+- `play(clip, fadeSeconds = 0)` starts at zero; a positive fade blends from the current pose into the advancing new clip. Untracked properties return toward the rest pose. Interpolation is linear in authored radians, so author wraparound explicitly. This is a pose transition, not three.js AnimationMixer action blending.
+- `update(seconds)` advances the active clip; looped clips wrap, one-shot clips hold the final pose. `onComplete(name)` fires once after both a one-shot clip and its entrance fade finish. `stop()` freezes the pose. Read `running` and `current` for state.
+- `dispose()` detaches attachments and clears clip/skin references. It does not dispose caller-owned art. Mutation/play/update after disposal throw.
+
+This is cutout skeletal animation, without weighted mesh deformation, inverse kinematics, or proprietary rig importers. Canvas sprites can occupy slots by explicitly importing `/pixel` as well.
+
+## SpriteSheet, Sprite2D, FrameAnimator (`/pixel`)
+
+`new SpriteSheet(decodedImage, atlasDefinition)` validates source dimensions and named top-left frame rectangles. `SpriteSheet.grid(image, width, height, tileWidth, tileHeight = tileWidth)` names cells `'0'`, `'1'`, … in top-down row order. `frame(name)` returns immutable metadata; unknown names throw. The sheet does not load, clone, close, or mutate its image. Decode images before constructing a sheet. Atlas dimensions and source rectangles are integer pixels.
+
+`new Sprite2D(sheet, frame, { pixelsPerUnit = 1, flipX = false, flipY = false }?)` creates a centered Node2D sprite with nearest sampling. `setFrame(name)` changes source dimensions without overwriting the node's transform. `setFlip(x, y = currentFlipY)` changes image orientation. `frameName`, flip flags, `atlas`, and `pixelsPerUnit` are public. The source's top-down pixels are rendered upright in the Y-up world.
+
+`new FrameAnimator(sprite)` accepts any structural target with `atlas.frame(name)` and `setFrame(name)`. Its `define`, `play`, `stop`, `update`, `running`, `current`, and `onComplete` contract matches SpriteAnimator below. Both implementations share the same animation logic. Only targets/asset representations differ. Use the same SpriteClip schema and seconds-based frame durations.
+
+## TileLayer (`/pixel`)
+
+`new TileLayer(sheet, tileMapDefinition)` uses the same definition, row convention, editing and collision APIs as native TileMap below. It is a Node2D whose local origin is bottom-left; serialized and get/set row indices are top-down. `getTile`, `setTile`, `setTiles`, `pointToTile`, `isSolid`, and `toJSONDefinition` share the native helper's contracts. Batch edits validate before modifying any cell.
+
+Canvas draws each occupied tile, unlike the native adapter's merged geometry. Use separate visible layers/chunks for large worlds; automatic culling and streaming are not implemented. Collision inputs are local coordinates before layer transforms. The layer does not own or dispose its sheet/image.
+
+## parseAseprite (`/formats`)
+
+`parseAseprite(json)` returns `{ atlas: PixelAtlasDefinition, clips: Record<string, SpriteClip> }` without creating a texture or requiring a DOM. Frame dimensions, bounds, tags and durations are validated; trimming/rotation is rejected. Pass the atlas metadata to SpriteSheet for Canvas, or use native `importAseprite(texture, json)` from `/3d/pixel`. `importTiledLayer` is the same renderer-independent converter described below. Read [asset formats](formats.md) for supported authoring options.
 
 ## Game2D
 

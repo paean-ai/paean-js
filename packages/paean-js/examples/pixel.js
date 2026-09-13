@@ -1,4 +1,8 @@
-import { CanvasTexture, Game2D, GridCollision, PixelAtlas, PixelSprite, SpriteAnimator, TileMap, VectorShape, PaeanPlatform, Random } from '@paean-ai/paean-js';
+import { CanvasTexture } from '@paean-ai/paean-js/3d';
+import { Game2D, GridCollision, PixelAtlas, PixelSprite, SpriteAnimator, TileMap } from '@paean-ai/paean-js/3d/pixel';
+import { VectorShape } from '@paean-ai/paean-js/3d/vector';
+import { PaeanPlatform } from '@paean-ai/paean-js/platform';
+import { Random } from '@paean-ai/paean-js/core';
 
 const source = document.createElement('canvas'); source.width = 64; source.height = 16;
 const brush = source.getContext('2d');
